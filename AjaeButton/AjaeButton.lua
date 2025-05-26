@@ -77,6 +77,8 @@ local function clearButton()
     buttons = {}
     MyCustomActionBarDbData = {}
     MyCustomActionBarDB = {}
+    NUM_ACTION_BUTTONS = 0
+    MyCustomActionBarDB.buttonCnt = 0
 end
 
 local function updateButton()
@@ -131,7 +133,7 @@ local function MyUpdateUsable(self)
 	self:EvaluateState(); 
 end
 
-
+--[[
 -- I rewrite the function for the following reasons
 -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'AjaeButton6:SetAttribute()' 호출을 시도했습니다.
 -- [Blizzard_ActionBar/Mainline/ActionButton.lua]:1588: in function <Blizzard_ActionBar/Mainline/ActionButton.lua:1586>
@@ -226,6 +228,12 @@ function ActionButton_UpdateCooldown(self)
 	end
 end
 
+local function MyUpdateState(self)
+	local action = self.action;
+	local isChecked = (IsCurrentAction(action) or IsAutoRepeatAction(action)) and not C_ActionBar.IsAutoCastPetAction(action);
+	self:SetChecked(isChecked);
+end
+-- 애드온 'AjaeButton'|1이;가; 보호된 함수 'AjaeButton6:SetAttribute()' 호출을 시도했습니다.
 
 
 -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceBar:ClearAllPointsBase()' 호출을 시도했습니다.
@@ -264,7 +272,7 @@ function ActionBarController_UpdateAll(force)
 
 	ValidateActionBarTransition();
 end
-
+]]
 
 
 --
@@ -285,6 +293,208 @@ function MySetShown(self)
 end
 
 
+local function oneMoreSetShown()
+    -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceButton1:SetShown()' 호출을 시도했습니다.
+    -- [C]: ?
+	if _G["AjaeButton_SetShownMultiBarHooked"] then return end
+	
+    for i=1, BUTTON_LIMIT_CNT do
+        local stanceButton = _G["StanceButton" .. i]
+        if stanceButton then
+        	stanceButton.SetShown = MySetShown
+        	stanceButton.ShouldShow = MyShouldShow
+        	--print("❌ stanceButton" .. i .. " 숨김 처리 완료!")
+        end
+        
+        
+         -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceBarButtonContainer1:SetShown()' 호출을 시도했습니다.
+         -- [C]: ?
+        local stanceBarButtonContainer = _G["StanceBarButtonContainer" .. i]
+        if stanceBarButtonContainer then
+        	stanceBarButtonContainer.SetShown = MySetShown
+        	stanceBarButtonContainer.ShouldShow = MyShouldShow
+        	--print("❌ stanceBarButtonContainer" .. i .. " 숨김 처리 완료!")
+        end
+
+        local multibarBottomLeft = _G["MultiBarBottomLeftButton" .. i]
+        if multibarBottomLeft then
+        	multibarBottomLeft.SetShown = MySetShown
+        	multibarBottomLeft.ShouldShow = MyShouldShow
+        	--print("❌ multibarBottomLeft" .. i .. " 숨김 처리 완료!")
+        end
+
+        local multibarBottomRight = _G["MultiBarBottomRightButton" .. i]
+        if multibarBottomRight then
+        	multibarBottomRight.SetShown = MySetShown
+        	multibarBottomRight.ShouldShow = MyShouldShow
+        	--print("❌ multibarBottomRight" .. i .. " 숨김 처리 완료!")
+        end
+
+        local MultiBarBottomRightButtonContainerVal = _G["MultiBarBottomRightButtonContainer" .. i]
+        if MultiBarBottomRightButtonContainerVal then
+        	MultiBarBottomRightButtonContainerVal.SetShown = MySetShown
+        	MultiBarBottomRightButtonContainerVal.ShouldShow = MyShouldShow
+        	--print("❌ MultiBarBottomRightButtonContainer" .. i .. " 숨김 처리 완료!")
+        end
+
+        local MultiBarBottomLeftButtonContainerVal = _G["MultiBarBottomLeftButtonContainer" .. i]
+        if MultiBarBottomLeftButtonContainerVal then
+        	MultiBarBottomLeftButtonContainerVal.SetShown = MySetShown
+        	MultiBarBottomLeftButtonContainerVal.ShouldShow = MyShouldShow
+        	--print("❌ MultiBarBottomLeftButtonContainer" .. i .. " 숨김 처리 완료!")
+        end
+
+        local ActionButtonVal = _G["ActionButton" .. i]
+        if ActionButtonVal then
+        	ActionButtonVal.SetShown = MySetShown
+        	ActionButtonVal.ShouldShow = MyShouldShow
+        	--print("❌ ActionButton" .. i .. " 숨김 처리 완료!")
+        end
+
+        local MainMenuBarButtonContainerVal = _G["MainMenuBarButtonContainer" .. i]
+        if MainMenuBarButtonContainerVal then
+        	MainMenuBarButtonContainerVal.SetShown = MySetShown
+        	MainMenuBarButtonContainerVal.ShouldShow = MyShouldShow
+        	--print("❌ MainMenuBarButtonContainer" .. i .. " 숨김 처리 완료!")
+        end
+
+        for j=1, BUTTON_LIMIT_CNT do
+            local multiBarButtonVal = _G["MultiBar" .. i .. "Button" .. j]
+            if multiBarButtonVal then
+                multiBarButtonVal.SetShown = MySetShown
+                multiBarButtonVal.ShouldShow = MyShouldShow
+		    end
+		end
+
+        for j=1, BUTTON_LIMIT_CNT do
+            local multiBarButtonContainerVal = _G["MultiBar" .. i .. "ButtonContainer" .. j]
+            if multiBarButtonContainerVal then
+                multiBarButtonContainerVal.SetShown = MySetShown
+                multiBarButtonContainerVal.ShouldShow = MyShouldShow
+		    end
+		end
+	end
+	
+	_G["AjaeButton_SetShownMultiBarHooked"] = true
+end
+
+
+local function DisableMultiBarInteraction()
+    if _G["AjaeButton_MultiBarHooked"] then return end
+    
+    -- 보호된 함수들에 대한 접근을 차단
+    local protectedFunctions = {
+        "SetAttribute"
+    }
+	
+    for i=1, BUTTON_LIMIT_CNT do
+        for _, funcName in ipairs(protectedFunctions) do
+            local ActionButtonVal = _G["ActionButton" .. i]
+            if ActionButtonVal then
+        	    ActionButtonVal[funcName] = function() end
+			end
+
+            local multibarBottomLeft = _G["MultiBarBottomLeftButton" .. i]
+            if multibarBottomLeft then
+        	    multibarBottomLeft[funcName] = function() end
+			end
+
+            local multibarBottomRight = _G["MultiBarBottomRightButton" .. i]
+            if multibarBottomRight then
+        	    multibarBottomRight[funcName] = function() end
+			end
+
+            local OverrideActionBarButtonVal = _G["OverrideActionBarButton" .. i]
+            if OverrideActionBarButtonVal then
+        	    OverrideActionBarButtonVal[funcName] = function() end
+			end
+
+            --local ajaeButtonVal = _G["AjaeButton" .. i]
+            --if ajaeButtonVal then
+        	--    ajaeButtonVal[funcName] = function() end
+			--end
+
+            for j=1, BUTTON_LIMIT_CNT do
+                local multiBarButtonVal = _G["MultiBar" .. i .. "Button" .. j]
+                if multiBarButtonVal then
+        	        multiBarButtonVal[funcName] = function() end
+			    end
+			end
+        end
+    end
+    
+    _G["AjaeButton_MultiBarHooked"] = true
+end
+
+local function myButtonHooked()
+    local protectedFunctions = {
+        "SetAttribute"
+    }
+	
+	for i=1, BUTTON_LIMIT_CNT do
+        for _, funcName in ipairs(protectedFunctions) do
+		    local ajaeButtonVal = _G["AjaeButton" .. i]
+            if ajaeButtonVal then
+        	    ajaeButtonVal[funcName] = function() end
+			end
+		end
+	end
+end
+		
+		
+local function DisableMainMenuBarInteraction()
+    if _G["AjaeButton_MainMenuBarHooked"] then return end
+    
+    -- 보호된 함수들에 대한 접근을 차단
+    local protectedFunctions = {
+        "ClearAllPointsBase",
+        "SetPointBase",
+        "SetPoint",
+        "ClearAllPoints",
+        "SetShownBase"
+    }
+    
+    for _, funcName in ipairs(protectedFunctions) do
+        if MainMenuBar[funcName] then
+            MainMenuBar[funcName] = function() end
+        end
+
+        if MultiBarBottomLeft[funcName] then
+            MultiBarBottomLeft[funcName] = function() end
+        end
+
+        if MultiBarBottomRight[funcName] then
+            MultiBarBottomRight[funcName] = function() end
+        end
+
+        if StanceBar[funcName] then
+            StanceBar[funcName] = function() end
+        end
+    end
+    
+    _G["AjaeButton_MainMenuBarHooked"] = true
+end
+
+--[[
+local function NewOnEvent(self, event, ...)
+    print("✨ 새로운 이벤트 핸들러 호출됨! 이벤트:", event)
+    -- pass event down to the buttons
+	for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
+		--frame:OnEvent(event, ...)
+	end
+end
+]]
+-- 기존 `OnEvent`을 후킹하여 추가 기능 포함
+--hooksecurefunc(ActionBarButtonEventsFrameMixin, "OnEvent", NewOnEvent)
+
+
+
+--function ActionBarController_ResetToDefault(force)
+	--MainMenuBar:SetAttribute("actionpage", GetActionBarPage());
+	--for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
+	--	--frame:UpdateAction(force);
+--	end
+--end
 
 
 -- 버튼 생성
@@ -312,6 +522,12 @@ local function makeButton(startN, endN)
         btn:SetID(actionID + i)
         btn.action = actionID + i
 
+        btn:SetAttribute("checkselfcast", true)
+        btn:SetAttribute("checkfocuscast", true)
+        btn:SetAttribute("checkmouseovercast", true)
+        btn:SetAttribute("useparent-actionpage", true)
+
+
         -- 아이콘 수동 생성
         -- 버튼이 생성될 때 텍스쳐를 아무 것도 안나타나게 해야 하는데 아직 그렇게는 못했다
         btn.icon:ClearAllPoints()
@@ -335,37 +551,23 @@ local function makeButton(startN, endN)
             MyCustomActionBarDbData[i].pos = { x = x, y = y }
         end)
 
-        -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceButton1:SetShown()' 호출을 시도했습니다.
-		-- [C]: ?
-		local stanceButton = _G["StanceButton" .. i]
-		if stanceButton then
-			stanceButton.SetShown = MySetShown
-			stanceButton.ShouldShow = MyShouldShow
-			print("❌ StanceBar" .. i .. " 숨김 처리 완료!")
-		end
-
-
-        -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceBarButtonContainer1:SetShown()' 호출을 시도했습니다.
-        -- [C]: ?
-		local stanceBarButtonContainer = _G["StanceBarButtonContainer" .. i]
-		if stanceBarButtonContainer then
-			stanceBarButtonContainer.SetShown = MySetShown
-			stanceBarButtonContainer.ShouldShow = MyShouldShow
-			print("❌ StanceBar" .. i .. " 숨김 처리 완료!")
-		end
-
-
         -- Texture settings and size correction
         -- Use inherited traits without anything special
         --btn:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
         --NormalTexture is displayed small again inside the button, so I clear it.
         btn:GetNormalTexture():ClearAllPoints()
         btn.UpdateUsable =  MyUpdateUsable
+        --btn.UpdateState = MyUpdateState
         btn:Update()
 
         buttons[i] = btn
     end
+
+    --oneMoreSetShown()
+    --DisableMultiBarInteraction()
+    myButtonHooked()
 end
+
 
 
 local function makeLoadButton(startN, endN)
@@ -381,7 +583,14 @@ local function makeLoadButton(startN, endN)
         btn:GetHighlightTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
         btn:GetCheckedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
 
+        --local meta = getmetatable(btn)
+        --print("🔍 AjaeButton1의 메타테이블:", meta)
+
+        for key, value in pairs(btn) do
+            print("🧐 변수 이름:", key)
+        end
         
+
         local row = math.floor((i - 1) / BUTTONS_PER_ROW)
         local col = (i - 1) % BUTTONS_PER_ROW
 
@@ -400,6 +609,11 @@ local function makeLoadButton(startN, endN)
 
         btn:SetID(actionID + i)
         btn.action = actionID + i
+
+        btn:SetAttribute("checkselfcast", true)
+        btn:SetAttribute("checkfocuscast", true)
+        btn:SetAttribute("checkmouseovercast", true)
+        btn:SetAttribute("useparent-actionpage", false)
 
         -- 아이콘 수동 생성
         -- 버튼이 생성될 때 텍스쳐를 아무 것도 안나타나게 해야 하는데 아직 그렇게는 못했다
@@ -423,36 +637,21 @@ local function makeLoadButton(startN, endN)
             MyCustomActionBarDbData[i].pos = { x = x, y = y }
         end)
 
-        -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceButton1:SetShown()' 호출을 시도했습니다.
-		-- [C]: ?
-		local stanceButton = _G["StanceButton" .. i]
-		if stanceButton then
-			stanceButton.SetShown = MySetShown
-			stanceButton.ShouldShow = MyShouldShow
-			print("❌ StanceBar" .. i .. " 숨김 처리 완료!")
-		end
-
-
-        -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceBarButtonContainer1:SetShown()' 호출을 시도했습니다.
-        -- [C]: ?
-		local stanceBarButtonContainer = _G["StanceBarButtonContainer" .. i]
-		if stanceBarButtonContainer then
-			stanceBarButtonContainer.SetShown = MySetShown
-			stanceBarButtonContainer.ShouldShow = MyShouldShow
-			print("❌ StanceBar" .. i .. " 숨김 처리 완료!")
-		end
-
-        
-        
         -- Texture settings and size correction
         -- Use inherited traits without anything special
         --NormalTexture is displayed small again inside the button, so I clear it.
         btn:GetNormalTexture():ClearAllPoints()
         btn.UpdateUsable =  MyUpdateUsable
+        --btn.UpdateState = MyUpdateState
         btn:Update()
 
         buttons[i] = btn
     end
+	
+	--oneMoreSetShown()
+    --DisableMultiBarInteraction()
+    myButtonHooked()
+    
 	
 	if MyCustomActionBarDB.isLocked == true then
 	    isLocked = true
@@ -517,7 +716,6 @@ SlashCmdList["AJAEBUTTON"] = function(msg)
                     RemoveButton(listLen)
                     listLen = listLen - 1
                 end
-                --remakeButton()
 			end
             NUM_ACTION_BUTTONS = n
             MyCustomActionBarDB.buttonCnt = n
@@ -539,7 +737,40 @@ SlashCmdList["AJAEBUTTON"] = function(msg)
     end
 end
 
+local function checkButtonCnt()
+    local btnCnt = 0
+    for i=1, BUTTON_LIMIT_CNT do
+        local checkBtn = _G["AjaeButton" .. i]
+        if checkBtn then
+        	btnCnt = btnCnt + 1
+        end
+	end
+    print("button cnt: ", btnCnt)
 
+    if btnCnt ~= MyCustomActionBarDB.buttonCnt then
+	    print("애드온 UI 이상으로 생성한 버튼의 개수와 실제 개수가 다릅니다.")
+		print("애드온 개수 다시 설정 중")
+	    
+        buttons = {} 
+	    MyCustomActionBarDB.buttonCnt = btnCnt
+		NUM_ACTION_BUTTONS = btnCnt
+
+        if MyCustomActionBarDB.buttonSize then
+		    BUTTON_SIZE = MyCustomActionBarDB.buttonSize
+        else
+            MyCustomActionBarDB.buttonSize = BUTTON_SIZE
+		end
+		
+		for i=1, btnCnt do
+		    local checkBtn = _G["AjaeButton" .. i]
+			print(checkBtn:GetSize())
+			MyCustomActionBarDbData[i].pos = {x = checkBtn:GetLeft(), y = checkBtn:GetTop()}
+            buttons[i] = checkBtn
+		end
+        print("애드온 개수 설정 완료")
+	end
+end
+		
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", function()
@@ -568,6 +799,11 @@ f:SetScript("OnEvent", function()
     end
 
     updateButton() -- 버튼 생성 시 1번 action button의 아이콘이 최초에 겹쳐 보이는 것을 방지 한다.
-end)
 
+    -- addon error check
+    oneMoreSetShown()
+    DisableMainMenuBarInteraction()
+    DisableMultiBarInteraction()
+    checkButtonCnt()
+end)
 
