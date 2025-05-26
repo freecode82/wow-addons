@@ -133,149 +133,7 @@ local function MyUpdateUsable(self)
 	self:EvaluateState(); 
 end
 
---[[
--- I rewrite the function for the following reasons
--- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'AjaeButton6:SetAttribute()' 호출을 시도했습니다.
--- [Blizzard_ActionBar/Mainline/ActionButton.lua]:1588: in function <Blizzard_ActionBar/Mainline/ActionButton.lua:1586>
--- below source code is in https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/AddOns/Blizzard_ActionBar/Mainline/ActionButton.lua
-function ActionButton_UpdateCooldown(self)
-	local locStart, locDuration;
-	local start, duration, enable, charges, maxCharges, chargeStart, chargeDuration;
-	local modRate = 1.0;
-	local chargeModRate = 1.0;
-	local actionType, actionID = nil; 
-	if (self.action) then 
-		actionType, actionID = GetActionInfo(self.action);
-	end 
-	local auraData = nil;
-	local passiveCooldownSpellID = nil;
-	local onEquipPassiveSpellID = nil;
 
-	if(actionID) then 
-		onEquipPassiveSpellID = C_ActionBar.GetItemActionOnEquipSpellID(self.action);
-	end
-
-	if (onEquipPassiveSpellID) then
-		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(onEquipPassiveSpellID);
-	elseif ((actionType and actionType == "spell") and actionID ) then 
-		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(actionID);
-	elseif(self.spellID) then 
-		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(self.spellID);
-	end
-
-	if(passiveCooldownSpellID and passiveCooldownSpellID ~= 0) then 
-		auraData = C_UnitAuras.GetPlayerAuraBySpellID(passiveCooldownSpellID);
-	end
-
-	if(auraData) then
-		local currentTime = GetTime();
-		local timeUntilExpire = auraData.expirationTime - currentTime;
-		local howMuchTimeHasPassed = auraData.duration - timeUntilExpire; 
-
-		locStart =  currentTime - howMuchTimeHasPassed;
-		locDuration = auraData.expirationTime - currentTime;
-		start = currentTime - howMuchTimeHasPassed;
-		duration =  auraData.duration
-		modRate = auraData.timeMod; 
-		charges = auraData.charges; 
-		maxCharges = auraData.maxCharges; 
-		chargeStart = currentTime * 0.001; 
-		chargeDuration = duration * 0.001;
-		chargeModRate = modRate; 
-		enable = 1; 
-	elseif (self.spellID) then
-		locStart, locDuration = C_Spell.GetSpellLossOfControlCooldown(self.spellID);
-		
-		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.spellID) or {startTime = 0, duration = 0, isEnabled = false, modRate = 0};
-		start, duration, enable, modRate = spellCooldownInfo.startTime, spellCooldownInfo.duration, spellCooldownInfo.isEnabled, spellCooldownInfo.modRate;
-
-		local chargeInfo = C_Spell.GetSpellCharges(self.spellID) or {currentCharges = 0, maxCharges = 0, cooldownStartTime = 0, cooldownDuration = 0, chargeModRate = 0};
-		charges, maxCharges, chargeStart, chargeDuration, chargeModRate = chargeInfo.currentCharges, chargeInfo.maxCharges, chargeInfo.cooldownStartTime, chargeInfo.cooldownDuration, chargeInfo.chargeModRate;
-	else
-		locStart, locDuration = GetActionLossOfControlCooldown(self.action);
-		start, duration, enable, modRate = GetActionCooldown(self.action);
-		charges, maxCharges, chargeStart, chargeDuration, chargeModRate = GetActionCharges(self.action);
-	end
-
-	if ( (locStart + locDuration) > (start + duration) ) then
-		if ( self.cooldown.currentCooldownType ~= COOLDOWN_TYPE_LOSS_OF_CONTROL ) then
-			self.cooldown:SetEdgeTexture("Interface\\Cooldown\\UI-HUD-ActionBar-LoC");
-			self.cooldown:SetSwipeColor(0.17, 0, 0);
-			self.cooldown.currentCooldownType = COOLDOWN_TYPE_LOSS_OF_CONTROL;
-			ActionButton_UpdateCooldownNumberHidden(self);
-		end
-
-		CooldownFrame_Set(self.cooldown, locStart, locDuration, true, true, modRate);
-		self.cooldown:SetScript("OnCooldownDone", ActionButtonCooldown_OnCooldownDone, false);
-		ClearChargeCooldown(self);
-	else
-		if ( self.cooldown.currentCooldownType ~= COOLDOWN_TYPE_NORMAL ) then
-			self.cooldown:SetEdgeTexture("Interface\\Cooldown\\UI-HUD-ActionBar-SecondaryCooldown");
-			self.cooldown:SetSwipeColor(0, 0, 0);
-			self.cooldown.currentCooldownType = COOLDOWN_TYPE_NORMAL;
-			ActionButton_UpdateCooldownNumberHidden(self);
-		end
-
-		self.cooldown:SetScript("OnCooldownDone", ActionButtonCooldown_OnCooldownDone, locStart > 0);
-
-		if ( charges and maxCharges and maxCharges > 1 and charges < maxCharges ) then
-			StartChargeCooldown(self, chargeStart, chargeDuration, chargeModRate);
-		else
-			ClearChargeCooldown(self);
-		end
-
-		CooldownFrame_Set(self.cooldown, start, duration, enable, false, modRate);
-	end
-end
-
-local function MyUpdateState(self)
-	local action = self.action;
-	local isChecked = (IsCurrentAction(action) or IsAutoRepeatAction(action)) and not C_ActionBar.IsAutoCastPetAction(action);
-	self:SetChecked(isChecked);
-end
--- 애드온 'AjaeButton'|1이;가; 보호된 함수 'AjaeButton6:SetAttribute()' 호출을 시도했습니다.
-
-
--- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceBar:ClearAllPointsBase()' 호출을 시도했습니다.
--- [C]: ?
-function ActionBarController_UpdateAll(force)
-	PossessActionBar:Update();
-	StanceBar:Update();
-	CURRENT_ACTION_BAR_STATE = LE_ACTIONBAR_STATE_MAIN;
-
-	-- If we have a skinned vehicle bar or skinned override bar, display the OverrideActionBar
-	if ((HasVehicleActionBar() and UnitVehicleSkin("player") and UnitVehicleSkin("player") ~= "")
-		or (HasOverrideActionBar() and GetOverrideBarSkin() and GetOverrideBarSkin() ~= 0)) then
-		OverrideActionBar:UpdateSkin();
-		CURRENT_ACTION_BAR_STATE = LE_ACTIONBAR_STATE_OVERRIDE;
-	-- If we have a non-skinned override bar of some sort, use the MainMenuBar
-	elseif ( HasBonusActionBar() or HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() or C_PetBattles.IsInBattle() ) then
-		if (HasVehicleActionBar()) then
-			MainMenuBar:SetAttribute("actionpage", GetVehicleBarIndex());
-		elseif (HasOverrideActionBar()) then
-			MainMenuBar:SetAttribute("actionpage", GetOverrideBarIndex());
-		elseif (HasTempShapeshiftActionBar()) then
-			MainMenuBar:SetAttribute("actionpage", GetTempShapeshiftBarIndex());
-		elseif (HasBonusActionBar() and GetActionBarPage() == 1) then
-			MainMenuBar:SetAttribute("actionpage", GetBonusBarIndex());
-		else
-			MainMenuBar:SetAttribute("actionpage", GetActionBarPage());
-		end
-
-		for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
-			frame:UpdateAction(force);
-		end
-	else
-		-- Otherwise, display the normal action bar
-		ActionBarController_ResetToDefault(force);
-	end
-
-	ValidateActionBarTransition();
-end
-]]
-
-
---
 -- 1x [ADDON_ACTION_BLOCKED] 애드온 'AjaeButton'|1이;가; 보호된 함수 'StanceButton1:SetShown()' 호출을 시도했습니다.
 -- [C]: ?
 function MyShouldShow(self)
@@ -475,27 +333,6 @@ local function DisableMainMenuBarInteraction()
     _G["AjaeButton_MainMenuBarHooked"] = true
 end
 
---[[
-local function NewOnEvent(self, event, ...)
-    print("✨ 새로운 이벤트 핸들러 호출됨! 이벤트:", event)
-    -- pass event down to the buttons
-	for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
-		--frame:OnEvent(event, ...)
-	end
-end
-]]
--- 기존 `OnEvent`을 후킹하여 추가 기능 포함
---hooksecurefunc(ActionBarButtonEventsFrameMixin, "OnEvent", NewOnEvent)
-
-
-
---function ActionBarController_ResetToDefault(force)
-	--MainMenuBar:SetAttribute("actionpage", GetActionBarPage());
-	--for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
-	--	--frame:UpdateAction(force);
---	end
---end
-
 
 -- 버튼 생성
 local function makeButton(startN, endN)
@@ -557,14 +394,11 @@ local function makeButton(startN, endN)
         --NormalTexture is displayed small again inside the button, so I clear it.
         btn:GetNormalTexture():ClearAllPoints()
         btn.UpdateUsable =  MyUpdateUsable
-        --btn.UpdateState = MyUpdateState
         btn:Update()
 
         buttons[i] = btn
     end
 
-    --oneMoreSetShown()
-    --DisableMultiBarInteraction()
     myButtonHooked()
 end
 
@@ -582,14 +416,6 @@ local function makeLoadButton(startN, endN)
         btn:GetPushedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
         btn:GetHighlightTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
         btn:GetCheckedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-
-        --local meta = getmetatable(btn)
-        --print("🔍 AjaeButton1의 메타테이블:", meta)
-
-        for key, value in pairs(btn) do
-            print("🧐 변수 이름:", key)
-        end
-        
 
         local row = math.floor((i - 1) / BUTTONS_PER_ROW)
         local col = (i - 1) % BUTTONS_PER_ROW
@@ -642,16 +468,12 @@ local function makeLoadButton(startN, endN)
         --NormalTexture is displayed small again inside the button, so I clear it.
         btn:GetNormalTexture():ClearAllPoints()
         btn.UpdateUsable =  MyUpdateUsable
-        --btn.UpdateState = MyUpdateState
         btn:Update()
 
         buttons[i] = btn
     end
 	
-	--oneMoreSetShown()
-    --DisableMultiBarInteraction()
     myButtonHooked()
-    
 	
 	if MyCustomActionBarDB.isLocked == true then
 	    isLocked = true
