@@ -4,4 +4,7 @@
 ## Interface: 110105
 ## SavedVariables: MyCustomActionBarDB
 ## SavedVariables: MyCustomActionBarDbData
+## SavedVariables: MyCustomActionBarSizeDbData
+Common.lua
+Options.lua
 AjaeButton3.lua
