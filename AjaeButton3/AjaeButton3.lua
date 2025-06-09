@@ -14,7 +14,7 @@ multiBar5 = _G["MultiBar5"]
 multiBarLeft = _G["MultiBarLeft"]
 multiBarRight = _G["MultiBarRight"]
 
-stanceButton = _G["StanceButton1"]
+stanceButtons = {}
 
 allButtons = {main, multiBarBottomRight, multiBarBottomLeft, multiBar7, multiBar6, multiBar5, multiBarLeft, multiBarRight}
 caps = {main.EndCaps, main.ActionBarPageNumber}
@@ -60,7 +60,8 @@ f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UNIT_AURA")
 f:RegisterEvent("UNIT_FLAGS")
 f:SetScript("OnEvent", function(self, event, ...)
-    --print("variable status: ", MyCustomActionBarDB.MainMenuBarShow, " ", MainMenuBarShow)
+    if InCombatLockdown() then return end
+    
     if event == "PLAYER_ENTERING_WORLD" then
         print("🌍 게임 접속 또는 로딩 완료")
 		C_Timer.After(1, function()
@@ -69,83 +70,18 @@ f:SetScript("OnEvent", function(self, event, ...)
             -- 이 애드온은 와우의 기본 패널을 컨트롤 하기 때문에 순서가 중요함
             loadButtonSize()
             initButton()
+            initStance()
             initCheck()
             showAll()
+            
         end)
     elseif event == "UNIT_AURA" or event == "UNIT_FLAGS" then
         C_Timer.After(1, function()
             loadButtonSize()
             initButton()
-	        initCheck()
+            initStance()
+	    initCheck()
             showAll()
 		end)
 	end
-
-    --multiBarBottomRight.actionButtons[2].IconMask:SetSize(20,20)
-    --main.actionButtons[2].IconMask:SetSize(20,20)
-
-    --for k, v in pairs(multiBarBottomRight.actionButtons[1]) do
-    --    print(k, type(v))
-    -- end
-    --print(multiBarBottomRight.actionButtons[1]:GetSize())
-    --print(main.actionButtons[1]:GetName())
 end)
-
-
---[[
-print("mainmenubar start")
---for k, v in pairs(main) do
---    print(k, type(v))
---end
-
-
-print("actionbutton start")
---for k, v in pairs(ac1) do
---    print(k, type(v))
---end
-
-
-mybuttonSlider:SetScript("OnValueChanged", function(self, value)
-    value = math.floor(value + 0.5)
-    print(value)
-    setButtonSize(ac1, value)
-    myeditbox:SetText(value)
-end)
-
-
-myeditbox:SetScript("OnEnterPressed", function(self)
-    local val = tonumber(self:GetText())
-    if val then
-        local min, max = mybuttonSlider:GetMinMaxValues()
-        if val < min then val = min end
-        if val > max then val = max end
-        mybuttonSlider:SetValue(val)
-    end
-    self:ClearFocus()
-end)
-
-
-frame1:RegisterEvent("ADDON_LOADED")
-frame1:SetScript("OnEvent", function(self, event, addonName)
-    if addonName == "MyMainMenuControl" then
-        myeditbox = _G["myeditbox1"]
-        myeditbox:SetAutoFocus(false)
-        mybuttonSlider = _G["buttonSlider"]
-        if myeditbox then
-            print("EditBox 로드됨:", myeditbox:GetName())
-        else
-            print("❌ EditBox를 찾을 수 없음")
-        end
-    end
-end)
-
-
-local function setButtonSize(btn, BUTTON_SIZE)
-    btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetNormalTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetPushedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetHighlightTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetCheckedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-end
-
-]]
