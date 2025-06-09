@@ -18,6 +18,86 @@ function setButtonSize(btn, BUTTON_SIZE)
 end
 
 
+--[[ 구지 오른쪽 하단의 메뉴 버튼들은 이동 시킬 필요는 없을 거 같다
+function initMicroMenu()
+    local microButtons = _G["MicroMenu"]
+
+    microButtons:SetMovable(true)
+    microButtons:EnableMouse(true)
+    microButtons:SetClampedToScreen(true)
+    microButtons:RegisterForDrag("LeftButton")
+
+    local btnName = microButtons:GetName()
+
+    if MyCustomActionBarDbData[btnName] ~= nil then -- 한번이라도 버튼 이동을 시킨 정보가 존재하면 버튼 프레임에서 떼어낸다
+        if MyCustomActionBarDbData[btnName].pos ~= nil then
+            local saved = MyCustomActionBarDbData[btnName]
+            microButtons:ClearAllPoints()  -- 위치를 이동 시키기 전 포인터 정보 초기화
+            microButtons:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+	        -- microButtons:SetParent(UIParent)  -- 액션버튼의 기본 프레임에서 이동 없이 부모를 변경하면 버튼이 불능이 된다. 그래서 위의 2코드로 위치 이동
+		end
+    end
+
+    microButtons:SetScript("OnDragStart", function(self)
+        if InCombatLockdown() then return end
+        if not isLocked then self:StartMoving() end
+    end)
+
+    microButtons:SetScript("OnDragStop", function(self)
+        if InCombatLockdown() then return end
+    
+        self:StopMovingOrSizing()
+        MyCustomActionBarDbData[btnName] = MyCustomActionBarDbData[btnName] or {}
+        local x, y = self:GetLeft(), self:GetTop()
+        MyCustomActionBarDbData[btnName].pos = { x = x, y = y }
+        -- self:SetParent(UIParent)
+    end)
+end
+]]
+
+
+function initStance()
+    for i=1, 20 do
+        local stanceButton = _G["StanceButton" .. i]
+
+        if stanceButton ~= nil then
+		    stanceButtons[#stanceButtons + 1] = stanceButton
+
+            stanceButton:SetMovable(true)
+            stanceButton:EnableMouse(true)
+            stanceButton:SetClampedToScreen(true) -- 화면 밖으로 벗어나지 않도록
+            stanceButton:RegisterForDrag("LeftButton")
+
+            local btnName = stanceButton:GetName()
+
+            if MyCustomActionBarDbData[btnName] ~= nil then -- 한번이라도 버튼 이동을 시킨 정보가 존재하면 버튼 프레임에서 떼어낸다
+                if MyCustomActionBarDbData[btnName].pos ~= nil then
+                    local saved = MyCustomActionBarDbData[btnName]
+                    stanceButton:ClearAllPoints()  -- 위치를 이동 시키기 전 포인터 정보 초기화
+                    stanceButton:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+		            stanceButton:SetParent(UIParent)  -- 액션버튼의 기본 프레임에서 이동 없이 부모를 변경하면 버튼이 불능이 된다. 그래서 위의 2코드로 위치 이동
+				end
+            end
+
+            stanceButton:SetScript("OnDragStart", function(self)
+                if InCombatLockdown() then return end
+                if not isLocked then self:StartMoving() end
+            end)
+
+            stanceButton:SetScript("OnDragStop", function(self)
+                if InCombatLockdown() then return end
+            
+                self:StopMovingOrSizing()
+                MyCustomActionBarDbData[btnName] = MyCustomActionBarDbData[btnName] or {}
+                local x, y = self:GetLeft(), self:GetTop()
+                MyCustomActionBarDbData[btnName].pos = { x = x, y = y }
+                self:SetParent(UIParent)
+            end)
+		end
+    end
+end
+
+
 function initButton()
     -- 모든 버튼이 이동 가능하게 한다.
     for i, btnFrame in ipairs(allButtons) do
@@ -38,6 +118,7 @@ function initButton()
                     btn:ClearAllPoints()  -- 위치를 이동 시키기 전 포인터 정보 초기화
                     btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
 		            btn:SetParent(UIParent)  -- 액션버튼의 기본 프레임에서 이동 없이 부모를 변경하면 버튼이 불능이 된다. 그래서 위의 2코드로 위치 이동
+                    -- btn:SetParent(nil)
 				end
             end
 
@@ -54,6 +135,7 @@ function initButton()
                 local x, y = self:GetLeft(), self:GetTop()
                 MyCustomActionBarDbData[btnName].pos = { x = x, y = y }
                 self:SetParent(UIParent)
+                -- btn:SetParent(nil)
             end)
         end
     end
