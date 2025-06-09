@@ -60,7 +60,7 @@ f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UNIT_AURA")
 f:RegisterEvent("UNIT_FLAGS")
 f:SetScript("OnEvent", function(self, event, ...)
-    if InCombatLockdown() then return end
+    -- if InCombatLockdown() then return end
     
     if event == "PLAYER_ENTERING_WORLD" then
         print("🌍 게임 접속 또는 로딩 완료")
@@ -80,7 +80,7 @@ f:SetScript("OnEvent", function(self, event, ...)
             loadButtonSize()
             initButton()
             initStance()
-	    initCheck()
+	        initCheck()
             showAll()
 		end)
 	end
