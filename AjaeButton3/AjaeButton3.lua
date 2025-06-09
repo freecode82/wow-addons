@@ -80,7 +80,7 @@ f:SetScript("OnEvent", function(self, event, ...)
             loadButtonSize()
             initButton()
             initStance()
-	        initCheck()
+	    initCheck()
             showAll()
 		end)
 	end
