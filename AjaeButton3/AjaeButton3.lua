@@ -54,6 +54,13 @@ SlashCmdList["AJAEBUTTON"] = function(msg)
     end
 end
 
+UIParent:HookScript("OnEvent", function(s, e, a1, a2)
+    -- print("이벤트:", e, "arg1:", a1, "arg2:", a2)
+	if e == "ADDON_ACTION_FORBIDDEN" and a1 == "AjaeButton3" then
+        -- print("이벤트:", e, "arg1:", a1, "arg2:", a2)
+		StaticPopup_Hide(e)
+	end
+end)
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
