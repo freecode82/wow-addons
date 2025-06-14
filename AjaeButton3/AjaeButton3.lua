@@ -82,7 +82,7 @@ f:SetScript("OnEvent", function(self, event, ...)
             showAll()
             
         end)
-    elseif event == "UNIT_AURA" or event == "UNIT_FLAGS" then
+    elseif event == "UNIT_AURA" or event == "UNIT_FLAGS" or event == "UNIT_EXITED_VEHICLE" then
         C_Timer.After(1, function()
             loadButtonSize()
             initButton()
