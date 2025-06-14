@@ -1,4 +1,6 @@
 function setButtonSize(btn, BUTTON_SIZE)
+    if InCombatLockdown() then return end
+
     btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
     btn:GetNormalTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
     btn:GetPushedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
