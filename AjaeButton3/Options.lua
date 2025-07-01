@@ -6,6 +6,7 @@ title:SetPoint("TOPLEFT", 16, -16)
 title:SetText("AjaeButton Setting")
 
 -- 可记 芒 积己
+--[[
 local mainButton = CreateFrame("Button", nil, settingsFrame, "UIPanelButtonTemplate")
 mainButton:SetSize(300, 25)
 mainButton:SetText("MainMenuBar show/hide")
@@ -21,6 +22,7 @@ mainButton:SetScript("OnClick", function()
         MyCustomActionBarDB.MainMenuBarShow = false
     end
 end)
+]]
 
 local MultiBarBottomRightShowButton = CreateFrame("Button", nil, settingsFrame, "UIPanelButtonTemplate")
 MultiBarBottomRightShowButton:SetSize(300, 25)
@@ -157,8 +159,21 @@ capsShowButton:SetScript("OnClick", function(self)
 end)
 
 
+local sizeStatusEditbox = CreateFrame("EditBox", "MySliderEditBox", settingsFrame, "InputBoxTemplate")
+sizeStatusEditbox:SetSize(60, 20)
+sizeStatusEditbox:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -220)
+sizeStatusEditbox:SetAutoFocus(false)
+sizeStatusEditbox:SetNumeric(true)
+--sizeStatusEditbox:SetText(MainMenuBarSlider:GetValue())
+local label = settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+label:SetPoint("LEFT", sizeStatusEditbox, "RIGHT", 10, 0) -- EditBox 坷弗率 10px
+label:SetText("<- show SIZE")
+
+
+
 -- slider can setup size for button
 
+--[[
 local MainMenuBarSlider = CreateFrame("Slider", "MainMenuBarSlider", settingsFrame, "OptionsSliderTemplate")
 MainMenuBarSlider:SetWidth(200)
 MainMenuBarSlider:SetHeight(20)
@@ -172,18 +187,6 @@ _G[MainMenuBarSlider:GetName().."Text"]:SetText("MainMenuBarButton set Size")
 _G[MainMenuBarSlider:GetName().."Low"]:SetText("10")
 _G[MainMenuBarSlider:GetName().."High"]:SetText("100")
 
-
-
-local sizeStatusEditbox = CreateFrame("EditBox", "MySliderEditBox", settingsFrame, "InputBoxTemplate")
-sizeStatusEditbox:SetSize(60, 20)
-sizeStatusEditbox:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -220)
-sizeStatusEditbox:SetAutoFocus(false)
-sizeStatusEditbox:SetNumeric(true)
---sizeStatusEditbox:SetText(MainMenuBarSlider:GetValue())
-local label = settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-label:SetPoint("LEFT", sizeStatusEditbox, "RIGHT", 10, 0) -- EditBox 坷弗率 10px
-label:SetText("<- show SIZE")
-
 MainMenuBarSlider:SetScript("OnValueChanged", function(self, value)
     value = math.floor(value + 0.5)
     sizeStatusEditbox:SetText(value)
@@ -192,6 +195,9 @@ MainMenuBarSlider:SetScript("OnValueChanged", function(self, value)
         setButtonSize(btn, value)
     end
 end)
+]]
+
+
 
 local MultiBarBottomRightSlider = CreateFrame("Slider", "MultiBarBottomRightSlider", settingsFrame, "OptionsSliderTemplate")
 MultiBarBottomRightSlider:SetWidth(200)

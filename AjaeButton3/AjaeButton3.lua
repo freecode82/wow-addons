@@ -16,7 +16,7 @@ multiBarRight = _G["MultiBarRight"]
 
 stanceButtons = {}
 
-allButtons = {main, multiBarBottomRight, multiBarBottomLeft, multiBar7, multiBar6, multiBar5, multiBarLeft, multiBarRight}
+allButtons = {multiBarBottomRight, multiBarBottomLeft, multiBar7, multiBar6, multiBar5, multiBarLeft, multiBarRight}
 caps = {main.EndCaps, main.ActionBarPageNumber}
 
 

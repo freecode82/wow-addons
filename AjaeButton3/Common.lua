@@ -152,11 +152,11 @@ function initCheck()
         MyCustomActionBarDB.isLocked = isLocked
     end
 
-    if MyCustomActionBarDB.MainMenuBarShow == false then
-        MainMenuBarShow = MyCustomActionBarDB.MainMenuBarShow
-    else
-        MyCustomActionBarDB.MainMenuBarShow = MainMenuBarShow
-    end
+    -- if MyCustomActionBarDB.MainMenuBarShow == false then
+    --    MainMenuBarShow = MyCustomActionBarDB.MainMenuBarShow
+    -- else
+    --    MyCustomActionBarDB.MainMenuBarShow = MainMenuBarShow
+    -- end
 
     if MyCustomActionBarDB.MultiBarBottomRightButtonShow == false then
         MultiBarBottomRightButtonShow = MyCustomActionBarDB.MultiBarBottomRightButtonShow
@@ -303,7 +303,7 @@ end
 
 
 function showAll()
-    showMainMenuBar()
+    -- showMainMenuBar()
     showMultiBarBottomRight()
     showMultiBarBottomLeft()
     showMultiBar7()
