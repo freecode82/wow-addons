@@ -10,6 +10,20 @@ function ShowStatus()
     end
 end
 
+
+function RefreshButton()
+    for i, btn in ipairs(buttons) do
+	    local saved = AjaeMyCustomActionBarDBData[i]
+        --print("저장된 데이터: ", saved)
+        if saved then
+            if saved.pos then
+                btn:ClearAllPoints()
+                btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            end
+		end
+	end
+end
+
 function AjaeSetButtonSize()
     for i, btn in ipairs(buttons) do
         btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
@@ -354,8 +368,11 @@ function SpellUpdateUsable(self)
     if not self.WIcon or not self.SpellNameRank then return end
 
     if self.mode == "skill" then
-        local IsUsable, NotEnoughMana = C_Spell.IsSpellUsable(46968) -- self.SpellNameRank)
-        print(isUsable, notEnoughMana)
+        --local spellLink = C_Spell.GetSpellLinkFromSpellID(46968)
+        local actionType, id, subType = GetActionInfo(self.action)
+        print(actionType, id, subType)
+        local IsUsable, NotEnoughMana = C_Spell.IsSpellUsable(self.spellIDInfo or self.SpellName or self.SpellNameRank)
+        
         if isUsable then
             self.WIcon:SetVertexColor(1.0, 1.0, 1.0)
         elseif notEnoughMana then

@@ -111,7 +111,7 @@ local function makeButton(startN, endN)
 			end
 			
 			if event == "SPELL_UPDATE_USABLE" then
-			    --self:SpellUpdateUsable()
+			    -- self:SpellUpdateUsable()
 			end
 		end)
 
@@ -346,7 +346,7 @@ local function makeLoadButton(startN, endN)
 			end
 			
 			if event == "SPELL_UPDATE_USABLE" then
-			    --self:SpellUpdateUsable()
+			    -- self:SpellUpdateUsable()
 			end
 		end)
 
@@ -627,6 +627,8 @@ end)
 		
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:RegisterEvent("UNIT_AURA")
+f:RegisterEvent("UNIT_FLAGS")
 f:SetScript("OnEvent", function()
     NUM_ACTION_BUTTONS = AjaeMyCustomActionBarDB.buttonCnt or DEFAULT_BUTTON_CNT --최초에 버튼개수는 3개이고
     BUTTON_SIZE = AjaeMyCustomActionBarDB.buttonSize or DEFAULT_BUTTON_SIZE -- 최초의 버튼 사이즈는 40
@@ -653,4 +655,5 @@ f:SetScript("OnEvent", function()
     end
     -- addon error check
     checkButtonCnt()
+    RefreshButton() -- 리프레쉬 개념으로 화면 전환 후 버튼을 보면 버튼의 크기가 미세하게 달라져서 겹쳐보이는 것을 방지한다.
 end)
