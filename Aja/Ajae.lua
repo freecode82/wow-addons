@@ -45,11 +45,12 @@ local function makeButton(startN, endN)
         btn.WName 			= _G[ACTIONBAR_NAME .. i .. "Name"];
 
         btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-        btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
-        btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
-        btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        RefreshButton(btn)
+        --btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
+        --btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
+        --btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        --btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        --btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
 
         local row = math.floor((i - 1) / BUTTONS_PER_ROW)
         local col = (i - 1) % BUTTONS_PER_ROW
@@ -273,11 +274,12 @@ local function makeLoadButton(startN, endN)
         btn.WName 			= _G[ACTIONBAR_NAME .. i .. "Name"];
 
         btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-        btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
-        btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
-        btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        RefreshButton(btn)
+        --btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
+        --btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
+        --btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        --btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        --btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
        
 
         local row = math.floor((i - 1) / BUTTONS_PER_ROW)
@@ -655,5 +657,7 @@ f:SetScript("OnEvent", function()
     end
     -- addon error check
     checkButtonCnt()
-    RefreshButton() -- 리프레쉬 개념으로 화면 전환 후 버튼을 보면 버튼의 크기가 미세하게 달라져서 겹쳐보이는 것을 방지한다.
+    for _, btn in ipairs(buttons) do -- 리프레쉬 개념으로 화면 전환 후 버튼을 보면 버튼의 크기가 미세하게 달라져서 겹쳐보이는 것을 방지한다.
+        RefreshButton(btn)
+    end 
 end)
