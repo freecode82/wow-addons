@@ -11,17 +11,35 @@ function ShowStatus()
 end
 
 
-function RefreshButton()
-    for i, btn in ipairs(buttons) do
-	    local saved = AjaeMyCustomActionBarDBData[i]
-        --print("저장된 데이터: ", saved)
-        if saved then
-            if saved.pos then
-                btn:ClearAllPoints()
-                btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-            end
-		end
-	end
+function RefreshButton(btn)
+    if btn.WNormalTexture then
+        btn.WNormalTexture:ClearAllPoints()
+        --btn.WNormalTexture:SetAllPoints(btn)
+        btn.WNormalTexture:SetPoint("TOPLEFT", btn, "TOPLEFT", -3, 3)
+        btn.WNormalTexture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 3, -3)
+    end
+
+    if btn.PushedTexture then
+        btn.PushedTexture:ClearAllPoints()
+        --btn.PushedTexture:SetAllPoints(btn)
+        btn.PushedTexture:SetPoint("TOPLEFT", btn, "TOPLEFT", -2, 2)
+        btn.PushedTexture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 2, -2)
+    end
+
+    if btn.HighlightTexture then
+        btn.HighlightTexture:ClearAllPoints()
+        btn.HighlightTexture:SetAllPoints(btn)
+    end
+
+    if btn.CheckedTexture then
+        btn.CheckedTexture:ClearAllPoints()
+        btn.CheckedTexture:SetAllPoints(btn)
+    end
+
+    if btn.SlotBackground then
+        btn.SlotBackground:ClearAllPoints()
+        btn.SlotBackground:SetAllPoints(btn)
+    end
 end
 
 function AjaeSetButtonSize()
