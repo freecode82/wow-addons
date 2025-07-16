@@ -10,7 +10,7 @@ function ShowStatus()
     end
 end
 
-
+-- 미사용 함수
 function RefreshButton(btn, i)
     --[[
     if btn.WNormalTexture then
