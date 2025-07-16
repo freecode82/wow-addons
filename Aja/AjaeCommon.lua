@@ -11,7 +11,8 @@ function ShowStatus()
 end
 
 
-function RefreshButton(btn)
+function RefreshButton(btn, i)
+    --[[
     if btn.WNormalTexture then
         btn.WNormalTexture:ClearAllPoints()
         --btn.WNormalTexture:SetAllPoints(btn)
@@ -40,7 +41,36 @@ function RefreshButton(btn)
         btn.SlotBackground:ClearAllPoints()
         btn.SlotBackground:SetAllPoints(btn)
     end
+	]]
+     -- 이정도가 적당
+    
+    local saved = AjaeMyCustomActionBarDBData[i]
+        --print("저장된 데이터: ", saved)
+    if saved then
+        if saved.pos then
+            btn:ClearAllPoints()
+            btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            btn.WNormalTexture:ClearAllPoints()
+            btn.WNormalTexture:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7)
+            btn.PushedTexture:ClearAllPoints()
+            btn.PushedTexture:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
+            btn.HighlightTexture:ClearAllPoints()
+            btn.HighlightTexture:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+            btn.CheckedTexture:ClearAllPoints()
+            btn.CheckedTexture:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+            btn.SlotBackground:ClearAllPoints()
+            btn.SlotBackground:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
+            btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE)
+
+            btn.IconMask:SetSize(0,0)
+        end
+	end	
 end
+
 
 function AjaeSetButtonSize()
     for i, btn in ipairs(buttons) do
@@ -106,6 +136,29 @@ function AjaeClearButton()
     AjaeMyCustomActionBarDB = {}
     NUM_ACTION_BUTTONS = 0
     AjaeMyCustomActionBarDB.buttonCnt = 0
+end
+
+-- 미사용 함수
+
+function ReloadClearButton()
+    for _, btn in ipairs(buttons) do
+        btn:Hide()
+        btn:SetParent(nil)
+        btn:ClearAllPoints()
+        btn:SetScript("OnMouseDown", nil)
+        btn:SetScript("OnEvent", nil)
+        btn:SetScript("OnClick", nil)
+        btn:SetScript("OnDragStart", nil)
+        btn:SetScript("OnDragStop", nil)
+        btn:SetScript("OnReceiveDrag", nil)
+        btn:SetScript("OnEnter", nil)
+        btn:SetScript("OnLeave", nil)
+        -- wrapper:SetFrameRef("mybtn" .. btn.myIndex, nil)
+        btn:UnregisterAllEvents()
+        btn.WIcon:SetTexture(nil)
+        btn = nil
+    end
+    buttons = {}
 end
 
 
