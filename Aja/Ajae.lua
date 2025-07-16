@@ -247,7 +247,7 @@ local function makeButton(startN, endN)
         AjaeMyCustomActionBarDBData[i].pos = { x = x, y = y }
         --print(AjaeMyCustomActionBarDBData[i].pos.x, AjaeMyCustomActionBarDBData[i].pos.y)
         -- print("my action num; ", btn.action)
-        RefreshButton(btn, i)
+        --RefreshButton(btn, i)
     end
 end
 
@@ -487,7 +487,7 @@ local function makeLoadButton(startN, endN)
 
         buttons[i] = btn
         -- print("my action num; ", btn.action)
-        RefreshButton(btn, i)
+        --RefreshButton(btn, i)
     end
 	
 	if AjaeMyCustomActionBarDB.isLocked == true then
