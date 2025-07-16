@@ -45,12 +45,11 @@ local function makeButton(startN, endN)
         btn.WName 			= _G[ACTIONBAR_NAME .. i .. "Name"];
 
         btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-        RefreshButton(btn)
-        --btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
-        --btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
-        --btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        --btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        --btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
+        btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
+        btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
 
         local row = math.floor((i - 1) / BUTTONS_PER_ROW)
         local col = (i - 1) % BUTTONS_PER_ROW
@@ -100,8 +99,6 @@ local function makeButton(startN, endN)
             GameTooltip:Hide()
         end)
 
-
-        	
         -- 이벤트 등록 및 쿨다운 업데이트
         btn:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
         btn:RegisterEvent("SPELL_UPDATE_USABLE")
@@ -250,6 +247,7 @@ local function makeButton(startN, endN)
         AjaeMyCustomActionBarDBData[i].pos = { x = x, y = y }
         --print(AjaeMyCustomActionBarDBData[i].pos.x, AjaeMyCustomActionBarDBData[i].pos.y)
         -- print("my action num; ", btn.action)
+        RefreshButton(btn, i)
     end
 end
 
@@ -274,12 +272,11 @@ local function makeLoadButton(startN, endN)
         btn.WName 			= _G[ACTIONBAR_NAME .. i .. "Name"];
 
         btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-        RefreshButton(btn)
-        --btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
-        --btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
-        --btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        --btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
-        --btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        btn.WNormalTexture:SetSize(BUTTON_SIZE + 7,BUTTON_SIZE + 7) -- 이정도가 적당
+        btn.PushedTexture:SetSize(BUTTON_SIZE + 4,BUTTON_SIZE + 4) -- 이정도가 적당
+        btn.HighlightTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        btn.CheckedTexture:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
+        btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) 
        
 
         local row = math.floor((i - 1) / BUTTONS_PER_ROW)
@@ -490,6 +487,7 @@ local function makeLoadButton(startN, endN)
 
         buttons[i] = btn
         -- print("my action num; ", btn.action)
+        RefreshButton(btn, i)
     end
 	
 	if AjaeMyCustomActionBarDB.isLocked == true then
@@ -629,35 +627,62 @@ end)
 		
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:RegisterEvent("UNIT_AURA")
-f:RegisterEvent("UNIT_FLAGS")
+--f:RegisterEvent("UNIT_AURA")
+--f:RegisterEvent("UNIT_FLAGS")
 f:SetScript("OnEvent", function()
-    NUM_ACTION_BUTTONS = AjaeMyCustomActionBarDB.buttonCnt or DEFAULT_BUTTON_CNT --최초에 버튼개수는 3개이고
-    BUTTON_SIZE = AjaeMyCustomActionBarDB.buttonSize or DEFAULT_BUTTON_SIZE -- 최초의 버튼 사이즈는 40
-
-    if AjaeMyCustomActionBarDB.buttonSize == nil then   -- 애드온을 처음 설치해서 변수가 없는 경우
-        AjaeMyCustomActionBarDB.buttonSize = BUTTON_SIZE  -- 기본 크기로 데이터 저장한다
-    end
-
-    if AjaeMyCustomActionBarDB.buttonCnt == nil then  -- 애드온을 처음 설치해서 버튼 개수가 없는 경우
-        AjaeMyCustomActionBarDB.buttonCnt = NUM_ACTION_BUTTONS  -- 기본 값인 3을 넣어서 버튼 3개가 생기게 한다.
-        makeButton(1, NUM_ACTION_BUTTONS)
-    else
-        if AjaeMyCustomActionBarDBData and #AjaeMyCustomActionBarDBData ~= 0 then -- 그 외 애드온을 사용하여 버튼 개수와 버튼 데이터가 존재하는 경우
-            if NUM_ACTION_BUTTONS == #AjaeMyCustomActionBarDBData then        -- 버튼 데이터의 개수와 현재 버튼 설정의 개수가 같다면 
-			    makeLoadButton(1, NUM_ACTION_BUTTONS)                         -- 해당 개수만큼 버튼을 만든다
-			else
-                NUM_ACTION_BUTTONS = #AjaeMyCustomActionBarDBData             -- 버튼 데이터의 개수와 현재 버튼 수 설정이 다르다면 데이터의 개수만큼 버튼 개수를 줄이고
-                makeLoadButton(1, NUM_ACTION_BUTTONS)                     -- 버튼을 만든다.
-            end
-        else
-		    AjaeMyCustomActionBarDB.buttonCnt = NUM_ACTION_BUTTONS          -- 버튼 개수는 있는데 버튼 데이터가 없는 이상한 경우라면 설정된 버튼 개수
-			makeButton(1, NUM_ACTION_BUTTONS)                           -- 만큼 버튼을 신규로 생성 한다.
+    -- reload를 제외하고 여관 돌아가기나 화면 전환의 경우 버튼이 존재 하면 더 이상 버튼을 만들지 못하게 한다.
+    -- 그렇지 않으면 버튼이 중복 생성 됨
+    local remake = false
+    if AjaeMyCustomActionBarDB.buttonCnt ~= nil then
+	    for i=1, AjaeMyCustomActionBarDB.buttonCnt do
+		    local checkBtn = _G[ACTIONBAR_NAME .. i]
+			if checkBtn then
+        	    -- continue
+            else
+			    remake = true
+				break
+			end
 		end
-    end
-    -- addon error check
-    checkButtonCnt()
-    for _, btn in ipairs(buttons) do -- 리프레쉬 개념으로 화면 전환 후 버튼을 보면 버튼의 크기가 미세하게 달라져서 겹쳐보이는 것을 방지한다.
-        RefreshButton(btn)
-    end 
+	end
+	
+	if remake then
+        NUM_ACTION_BUTTONS = AjaeMyCustomActionBarDB.buttonCnt or DEFAULT_BUTTON_CNT --최초에 버튼개수는 3개이고
+        BUTTON_SIZE = AjaeMyCustomActionBarDB.buttonSize or DEFAULT_BUTTON_SIZE -- 최초의 버튼 사이즈는 40
+    
+        if AjaeMyCustomActionBarDB.buttonSize == nil then   -- 애드온을 처음 설치해서 변수가 없는 경우
+            AjaeMyCustomActionBarDB.buttonSize = BUTTON_SIZE  -- 기본 크기로 데이터 저장한다
+        end
+    
+        if AjaeMyCustomActionBarDB.buttonCnt == nil then  -- 애드온을 처음 설치해서 버튼 개수가 없는 경우
+            AjaeMyCustomActionBarDB.buttonCnt = NUM_ACTION_BUTTONS  -- 기본 값인 3을 넣어서 버튼 3개가 생기게 한다.
+            makeButton(1, NUM_ACTION_BUTTONS)
+        else
+            if AjaeMyCustomActionBarDBData and #AjaeMyCustomActionBarDBData ~= 0 then -- 그 외 애드온을 사용하여 버튼 개수와 버튼 데이터가 존재하는 경우
+                if NUM_ACTION_BUTTONS == #AjaeMyCustomActionBarDBData then        -- 버튼 데이터의 개수와 현재 버튼 설정의 개수가 같다면 
+    			    makeLoadButton(1, NUM_ACTION_BUTTONS)                         -- 해당 개수만큼 버튼을 만든다
+    			else
+                    NUM_ACTION_BUTTONS = #AjaeMyCustomActionBarDBData             -- 버튼 데이터의 개수와 현재 버튼 수 설정이 다르다면 데이터의 개수만큼 버튼 개수를 줄이고
+                    makeLoadButton(1, NUM_ACTION_BUTTONS)                     -- 버튼을 만든다.
+                end
+            else
+    		    AjaeMyCustomActionBarDB.buttonCnt = NUM_ACTION_BUTTONS          -- 버튼 개수는 있는데 버튼 데이터가 없는 이상한 경우라면 설정된 버튼 개수
+    			makeButton(1, NUM_ACTION_BUTTONS)                           -- 만큼 버튼을 신규로 생성 한다.
+    		end
+        end
+        -- addon error check
+        checkButtonCnt()
+        --[[
+        A = buttons[1]
+        print(A.WIcon:GetSize())
+        print(A.WNormalTexture:GetSize())
+        print(A.WCooldown:GetSize())
+        print(A.WBorder:GetSize())
+        print(A.WFlashTexture:GetSize())
+        print(A.CheckedTexture:GetSize())
+        print(A.PushedTexture:GetSize())
+        print(A.HighlightTexture:GetSize())
+        print(A.SlotBackground:GetSize())
+        print(A.IconMask:GetSize())
+		]]
+	end
 end)
