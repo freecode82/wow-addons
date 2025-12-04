@@ -5,7 +5,7 @@ MyCustomActionBarDbData = MyCustomActionBarDbData or {}
 MyCustomActionBarSizeDbData = MyCustomActionBarSizeDbData or {}
 
 
-main = _G["MainMenuBar"]
+main = _G["MainActionBar"]
 multiBarBottomRight = _G["MultiBarBottomRight"]
 multiBarBottomLeft = _G["MultiBarBottomLeft"]
 multiBar7 = _G["MultiBar7"]
@@ -92,3 +92,4 @@ f:SetScript("OnEvent", function(self, event, ...)
 		end)
 	end
 end)
+
