@@ -1,26 +1,65 @@
 function setButtonSize(btn, BUTTON_SIZE)
     if InCombatLockdown() then return end
+    local buttonSize = BUTTON_SIZE - 6
+    local x = btn:GetLeft()
+    local y = btn:GetTop()
 
-    btn:SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetNormalTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetPushedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetHighlightTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
-    btn:GetCheckedTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE)
+    btn:ClearAllPoints() -- ë²„íŠ¼ ì§€ìš°ê³ 
+    btn:SetSize(buttonSize, buttonSize) -- ë²„íŠ¼ í¬ê¸°ê°€ ì•„ë˜ì˜ í…ìŠ¤ì³ì˜ í¬ê¸°ì™€ ë‹¤ë¥´ë‹¤
+    btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+    
+    btn:GetNormalTexture():ClearAllPoints() -- ë²„íŠ¼ ì§€ìš°ê³ 
+    btn:GetNormalTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE) -- ë²„íŠ¼ í¬ê¸° ì •í•˜ê³ 
+    btn:GetNormalTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0) -- ë²„íŠ¼ ê·¸ë¦¬ê³ 
 
-    local size = btn:GetWidth()
-    -- btn.IconMask:Hide()
-    -- btn.IconMask:ClearAllPoints()
-    btn.IconMask:SetSize(size, size)
-    btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", -2, 0)
-    -- btn.IconMask:SetPoint("CENTER", btn)
+    -- ë²„íŠ¼ì´ ê¸°ë³¸ì ìœ¼ë¡œ í¬ê³  ì´ í¬ê¸°ë¥¼ ë‹¤ë¥¸ ê²ƒê³¼ ë§ì¶˜ë‹¤
+    btn:GetHighlightTexture():ClearAllPoints()
+    btn:GetHighlightTexture():SetSize(BUTTON_SIZE-4, BUTTON_SIZE-4) --
+    btn:GetHighlightTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    
+    --btn.IconMask:ClearAllPoints()
+    --btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    --btn.IconMask:SetSize(btn:GetHighlightTexture():GetWidth(), btn:GetHighlightTexture():GetWidth()) --
+    
+    btn:GetPushedTexture():ClearAllPoints()
+    btn:GetPushedTexture():SetSize(BUTTON_SIZE-4, BUTTON_SIZE-4)
+    btn:GetPushedTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    --btn:GetPushedTexture():Hide()
 
-    -- ¹öÆ° »çÀÌÁî Á¤º¸¸¦ ÀúÀåÇÑ´Ù.
+    btn:GetCheckedTexture():ClearAllPoints()
+    btn:GetCheckedTexture():SetSize(BUTTON_SIZE-4, BUTTON_SIZE-4)
+    btn:GetCheckedTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    
+    --btn:GetCheckedTexture():Hide()
+    btn.SlotBackground:ClearAllPoints()
+    btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) --
+    btn.SlotBackground:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    --local size = btn.IconMask:GetWidth()
+    --btn.WIcon = _G[btn:GetName() .. "Icon"]
+    --print(btn:GetName())
+    --btn.WIcon:SetSize(BUTTON_SIZE+6, BUTTON_SIZE+6)
+    --btn.WIcon:SetPoint("TOPLEFT", btn, "TOPLEFT", -4, -4)
+       --btn.SlotBackground:Hide()
+       --btn.IconMask:Hide()
+       --btn.NormalTexture:Hide()
+       --btn.HighlightTexture:Hide()
+    --btn.IconMask:ClearAllPoints()
+    --btn.IconMask:SetSize(size, size)
+    
+    --
+    
+    --btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    --btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0, 0)
+    --btn:GetIcon():SetSize(BUTTON_SIZE, BUTTON_SIZE)
+    --btn.IconMask:SetPoint("TOPLEFT", btn, "BOTTOMRIGHT", 0, 0)
+    --btn.IconMask:SetPoint("CENTER", btn)
+
     MyCustomActionBarSizeDbData[btn:GetName()] = MyCustomActionBarSizeDbData[btnName] or {}
     MyCustomActionBarSizeDbData[btn:GetName()].buttonSize = BUTTON_SIZE
 end
 
 
---[[ ±¸Áö ¿À¸¥ÂÊ ÇÏ´ÜÀÇ ¸Ş´º ¹öÆ°µéÀº ÀÌµ¿ ½ÃÅ³ ÇÊ¿ä´Â ¾øÀ» °Å °°´Ù
+--[[ êµ¬ì§€ ì˜¤ë¥¸ìª½ í•˜ë‹¨ì˜ ë©”ë‰´ ë²„íŠ¼ë“¤ì€ ì´ë™ ì‹œí‚¬ í•„ìš”ëŠ” ì—†ì„ ê±° ê°™ë‹¤
 function initMicroMenu()
     local microButtons = _G["MicroMenu"]
 
@@ -31,12 +70,12 @@ function initMicroMenu()
 
     local btnName = microButtons:GetName()
 
-    if MyCustomActionBarDbData[btnName] ~= nil then -- ÇÑ¹øÀÌ¶óµµ ¹öÆ° ÀÌµ¿À» ½ÃÅ² Á¤º¸°¡ Á¸ÀçÇÏ¸é ¹öÆ° ÇÁ·¹ÀÓ¿¡¼­ ¶¼¾î³½´Ù
+    if MyCustomActionBarDbData[btnName] ~= nil then -- í•œë²ˆì´ë¼ë„ ë²„íŠ¼ ì´ë™ì„ ì‹œí‚¨ ì •ë³´ê°€ ì¡´ì¬í•˜ë©´ ë²„íŠ¼ í”„ë ˆì„ì—ì„œ ë–¼ì–´ë‚¸ë‹¤
         if MyCustomActionBarDbData[btnName].pos ~= nil then
             local saved = MyCustomActionBarDbData[btnName]
-            microButtons:ClearAllPoints()  -- À§Ä¡¸¦ ÀÌµ¿ ½ÃÅ°±â Àü Æ÷ÀÎÅÍ Á¤º¸ ÃÊ±âÈ­
+            microButtons:ClearAllPoints()  -- ìœ„ì¹˜ë¥¼ ì´ë™ ì‹œí‚¤ê¸° ì „ í¬ì¸í„° ì •ë³´ ì´ˆê¸°í™”
             microButtons:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-	        -- microButtons:SetParent(UIParent)  -- ¾×¼Ç¹öÆ°ÀÇ ±âº» ÇÁ·¹ÀÓ¿¡¼­ ÀÌµ¿ ¾øÀÌ ºÎ¸ğ¸¦ º¯°æÇÏ¸é ¹öÆ°ÀÌ ºÒ´ÉÀÌ µÈ´Ù. ±×·¡¼­ À§ÀÇ 2ÄÚµå·Î À§Ä¡ ÀÌµ¿
+	        -- microButtons:SetParent(UIParent)  -- ì•¡ì…˜ë²„íŠ¼ì˜ ê¸°ë³¸ í”„ë ˆì„ì—ì„œ ì´ë™ ì—†ì´ ë¶€ëª¨ë¥¼ ë³€ê²½í•˜ë©´ ë²„íŠ¼ì´ ë¶ˆëŠ¥ì´ ëœë‹¤. ê·¸ë˜ì„œ ìœ„ì˜ 2ì½”ë“œë¡œ ìœ„ì¹˜ ì´ë™
 		end
     end
 
@@ -67,17 +106,17 @@ function initStance()
 
             stanceButton:SetMovable(true)
             stanceButton:EnableMouse(true)
-            stanceButton:SetClampedToScreen(true) -- È­¸é ¹ÛÀ¸·Î ¹ş¾î³ªÁö ¾Êµµ·Ï
+            stanceButton:SetClampedToScreen(true) -- í™”ë©´ ë°–ìœ¼ë¡œ ë²—ì–´ë‚˜ì§€ ì•Šë„ë¡
             stanceButton:RegisterForDrag("LeftButton")
 
             local btnName = stanceButton:GetName()
 
-            if MyCustomActionBarDbData[btnName] ~= nil then -- ÇÑ¹øÀÌ¶óµµ ¹öÆ° ÀÌµ¿À» ½ÃÅ² Á¤º¸°¡ Á¸ÀçÇÏ¸é ¹öÆ° ÇÁ·¹ÀÓ¿¡¼­ ¶¼¾î³½´Ù
+            if MyCustomActionBarDbData[btnName] ~= nil then -- í•œë²ˆì´ë¼ë„ ë²„íŠ¼ ì´ë™ì„ ì‹œí‚¨ ì •ë³´ê°€ ì¡´ì¬í•˜ë©´ ë²„íŠ¼ í”„ë ˆì„ì—ì„œ ë–¼ì–´ë‚¸ë‹¤
                 if MyCustomActionBarDbData[btnName].pos ~= nil then
                     local saved = MyCustomActionBarDbData[btnName]
-                    stanceButton:ClearAllPoints()  -- À§Ä¡¸¦ ÀÌµ¿ ½ÃÅ°±â Àü Æ÷ÀÎÅÍ Á¤º¸ ÃÊ±âÈ­
+                    stanceButton:ClearAllPoints()  -- ìœ„ì¹˜ë¥¼ ì´ë™ ì‹œí‚¤ê¸° ì „ í¬ì¸í„° ì •ë³´ ì´ˆê¸°í™”
                     stanceButton:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-		            stanceButton:SetParent(UIParent)  -- ¾×¼Ç¹öÆ°ÀÇ ±âº» ÇÁ·¹ÀÓ¿¡¼­ ÀÌµ¿ ¾øÀÌ ºÎ¸ğ¸¦ º¯°æÇÏ¸é ¹öÆ°ÀÌ ºÒ´ÉÀÌ µÈ´Ù. ±×·¡¼­ À§ÀÇ 2ÄÚµå·Î À§Ä¡ ÀÌµ¿
+		            stanceButton:SetParent(UIParent)  -- ì•¡ì…˜ë²„íŠ¼ì˜ ê¸°ë³¸ í”„ë ˆì„ì—ì„œ ì´ë™ ì—†ì´ ë¶€ëª¨ë¥¼ ë³€ê²½í•˜ë©´ ë²„íŠ¼ì´ ë¶ˆëŠ¥ì´ ëœë‹¤. ê·¸ë˜ì„œ ìœ„ì˜ 2ì½”ë“œë¡œ ìœ„ì¹˜ ì´ë™
 				end
             end
 
@@ -101,25 +140,25 @@ end
 
 
 function initButton()
-    -- ¸ğµç ¹öÆ°ÀÌ ÀÌµ¿ °¡´ÉÇÏ°Ô ÇÑ´Ù.
+    -- ëª¨ë“  ë²„íŠ¼ì´ ì´ë™ ê°€ëŠ¥í•˜ê²Œ í•œë‹¤.
     for i, btnFrame in ipairs(allButtons) do
         --print(btnFrame.numButtons)
     
         for j, btn in ipairs(btnFrame.actionButtons) do
-            --print("¹öÆ° ÀÌ¸§:", btn:GetName())
+            --print("ë²„íŠ¼ ì´ë¦„:", btn:GetName())
             btn:SetMovable(true)
             btn:EnableMouse(true)
             btn:RegisterForDrag("LeftButton")
 
             local btnName = btn:GetName()
 
-            if MyCustomActionBarDbData[btnName] ~= nil then -- ÇÑ¹øÀÌ¶óµµ ¹öÆ° ÀÌµ¿À» ½ÃÅ² Á¤º¸°¡ Á¸ÀçÇÏ¸é ¹öÆ° ÇÁ·¹ÀÓ¿¡¼­ ¶¼¾î³½´Ù
+            if MyCustomActionBarDbData[btnName] ~= nil then -- í•œë²ˆì´ë¼ë„ ë²„íŠ¼ ì´ë™ì„ ì‹œí‚¨ ì •ë³´ê°€ ì¡´ì¬í•˜ë©´ ë²„íŠ¼ í”„ë ˆì„ì—ì„œ ë–¼ì–´ë‚¸ë‹¤
                 if MyCustomActionBarDbData[btnName].pos ~= nil then
                     local saved = MyCustomActionBarDbData[btnName]
                     --print(btn:GetName())
-                    btn:ClearAllPoints()  -- À§Ä¡¸¦ ÀÌµ¿ ½ÃÅ°±â Àü Æ÷ÀÎÅÍ Á¤º¸ ÃÊ±âÈ­
+                    btn:ClearAllPoints()  -- ìœ„ì¹˜ë¥¼ ì´ë™ ì‹œí‚¤ê¸° ì „ í¬ì¸í„° ì •ë³´ ì´ˆê¸°í™”
                     btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-		            btn:SetParent(UIParent)  -- ¾×¼Ç¹öÆ°ÀÇ ±âº» ÇÁ·¹ÀÓ¿¡¼­ ÀÌµ¿ ¾øÀÌ ºÎ¸ğ¸¦ º¯°æÇÏ¸é ¹öÆ°ÀÌ ºÒ´ÉÀÌ µÈ´Ù. ±×·¡¼­ À§ÀÇ 2ÄÚµå·Î À§Ä¡ ÀÌµ¿
+		            btn:SetParent(UIParent)  -- ì•¡ì…˜ë²„íŠ¼ì˜ ê¸°ë³¸ í”„ë ˆì„ì—ì„œ ì´ë™ ì—†ì´ ë¶€ëª¨ë¥¼ ë³€ê²½í•˜ë©´ ë²„íŠ¼ì´ ë¶ˆëŠ¥ì´ ëœë‹¤. ê·¸ë˜ì„œ ìœ„ì˜ 2ì½”ë“œë¡œ ìœ„ì¹˜ ì´ë™
                     -- btn:SetParent(nil)
 				end
             end
@@ -289,10 +328,10 @@ end
 function loadButtonSize()
     for i, btnFrame in ipairs(allButtons) do
         for j, btn in ipairs(btnFrame.actionButtons) do
-            -- print("¹öÆ° ÀÌ¸§:", btn:GetName())
+            -- print("ë²„íŠ¼ ì´ë¦„:", btn:GetName())
             local btnName = btn:GetName()
 
-            if MyCustomActionBarSizeDbData[btnName]~= nil then -- ÇÑ¹øÀÌ¶óµµ ¹öÆ° »çÀÌÁî¸¦ º¯°æ Çß´Ù¸é
+            if MyCustomActionBarSizeDbData[btnName]~= nil then -- í•œë²ˆì´ë¼ë„ ë²„íŠ¼ ì‚¬ì´ì¦ˆë¥¼ ë³€ê²½ í–ˆë‹¤ë©´
                 if MyCustomActionBarSizeDbData[btnName].buttonSize ~= nil then
                     setButtonSize(btn, MyCustomActionBarSizeDbData[btnName].buttonSize)
 				end
@@ -313,3 +352,4 @@ function showAll()
     showMultiBarRight()
     showCaps()
 end
+
