@@ -66,6 +66,8 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UNIT_AURA")
 f:RegisterEvent("UNIT_FLAGS")
+f:RegisterEvent("CLIENT_SCENE_OPENED")
+f:RegisterEvent("CLIENT_SCENE_CLOSED")
 f:SetScript("OnEvent", function(self, event, ...)
     -- if InCombatLockdown() then return end
     
@@ -90,6 +92,15 @@ f:SetScript("OnEvent", function(self, event, ...)
 	        initCheck()
             showAll()
 		end)
+    elseif event == "CLIENT_SCENE_OPENED" then
+        C_Timer.After(1, function()
+            hideButtonBecauseOverrideActionBar()
+        end)
+    elseif event == "CLIENT_SCENE_CLOSED" then
+        C_Timer.After(1, function()
+            showButtonBecauseOverrideActionBar()
+        end)
 	end
 end)
+
 
