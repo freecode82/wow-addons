@@ -353,3 +353,26 @@ function showAll()
     showCaps()
 end
 
+function hideButtonBecauseOverrideActionBar()
+    for i, btnFrame in ipairs(allButtons) do
+        for j, btn in ipairs(btnFrame.actionButtons) do
+            if MyCustomActionBarDbData[btn:GetName()] ~= nil then
+                if MyCustomActionBarDbData[btn:GetName()].pos ~= nil then
+                    btn:Hide()
+                end
+            end
+        end
+    end
+end
+
+function showButtonBecauseOverrideActionBar()
+    for i, btnFrame in ipairs(allButtons) do
+        for j, btn in ipairs(btnFrame.actionButtons) do
+            if MyCustomActionBarDbData[btn:GetName()] ~= nil then
+                if MyCustomActionBarDbData[btn:GetName()].pos ~= nil then
+                    btn:Show()
+                end
+            end
+        end
+    end
+end
