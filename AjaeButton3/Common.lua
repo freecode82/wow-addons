@@ -4,16 +4,16 @@ function setButtonSize(btn, BUTTON_SIZE)
     local x = btn:GetLeft()
     local y = btn:GetTop()
 
-    btn:ClearAllPoints() -- 버튼 지우고
+    --btn:ClearAllPoints() -- 버튼 지우고
     btn:SetSize(buttonSize, buttonSize) -- 버튼 크기가 아래의 텍스쳐의 크기와 다르다
     btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
     
-    btn:GetNormalTexture():ClearAllPoints() -- 버튼 지우고
+    --btn:GetNormalTexture():ClearAllPoints() -- 버튼 지우고
     btn:GetNormalTexture():SetSize(BUTTON_SIZE, BUTTON_SIZE) -- 버튼 크기 정하고
     btn:GetNormalTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0) -- 버튼 그리고
 
     -- 버튼이 기본적으로 크고 이 크기를 다른 것과 맞춘다
-    btn:GetHighlightTexture():ClearAllPoints()
+    --btn:GetHighlightTexture():ClearAllPoints()
     btn:GetHighlightTexture():SetSize(BUTTON_SIZE-4, BUTTON_SIZE-4) --
     btn:GetHighlightTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
     
@@ -21,17 +21,17 @@ function setButtonSize(btn, BUTTON_SIZE)
     --btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
     --btn.IconMask:SetSize(btn:GetHighlightTexture():GetWidth(), btn:GetHighlightTexture():GetWidth()) --
     
-    btn:GetPushedTexture():ClearAllPoints()
+    --btn:GetPushedTexture():ClearAllPoints()
     btn:GetPushedTexture():SetSize(BUTTON_SIZE-4, BUTTON_SIZE-4)
     btn:GetPushedTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
     --btn:GetPushedTexture():Hide()
 
-    btn:GetCheckedTexture():ClearAllPoints()
+    --btn:GetCheckedTexture():ClearAllPoints()
     btn:GetCheckedTexture():SetSize(BUTTON_SIZE-4, BUTTON_SIZE-4)
     btn:GetCheckedTexture():SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
     
     --btn:GetCheckedTexture():Hide()
-    btn.SlotBackground:ClearAllPoints()
+    --btn.SlotBackground:ClearAllPoints()
     btn.SlotBackground:SetSize(BUTTON_SIZE, BUTTON_SIZE) --
     btn.SlotBackground:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
     --local size = btn.IconMask:GetWidth()
@@ -54,12 +54,13 @@ function setButtonSize(btn, BUTTON_SIZE)
     --btn.IconMask:SetPoint("TOPLEFT", btn, "BOTTOMRIGHT", 0, 0)
     --btn.IconMask:SetPoint("CENTER", btn)
 
+    -- ��ư ������ ������ �����Ѵ�.
     MyCustomActionBarSizeDbData[btn:GetName()] = MyCustomActionBarSizeDbData[btnName] or {}
     MyCustomActionBarSizeDbData[btn:GetName()].buttonSize = BUTTON_SIZE
 end
 
 
---[[ 구지 오른쪽 하단의 메뉴 버튼들은 이동 시킬 필요는 없을 거 같다
+--[[ ���� ������ �ϴ��� �޴� ��ư���� �̵� ��ų �ʿ�� ���� �� ����
 function initMicroMenu()
     local microButtons = _G["MicroMenu"]
 
@@ -70,12 +71,12 @@ function initMicroMenu()
 
     local btnName = microButtons:GetName()
 
-    if MyCustomActionBarDbData[btnName] ~= nil then -- 한번이라도 버튼 이동을 시킨 정보가 존재하면 버튼 프레임에서 떼어낸다
+    if MyCustomActionBarDbData[btnName] ~= nil then -- �ѹ��̶� ��ư �̵��� ��Ų ������ �����ϸ� ��ư �����ӿ��� �����
         if MyCustomActionBarDbData[btnName].pos ~= nil then
             local saved = MyCustomActionBarDbData[btnName]
-            microButtons:ClearAllPoints()  -- 위치를 이동 시키기 전 포인터 정보 초기화
+            microButtons:ClearAllPoints()  -- ��ġ�� �̵� ��Ű�� �� ������ ���� �ʱ�ȭ
             microButtons:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-	        -- microButtons:SetParent(UIParent)  -- 액션버튼의 기본 프레임에서 이동 없이 부모를 변경하면 버튼이 불능이 된다. 그래서 위의 2코드로 위치 이동
+	        -- microButtons:SetParent(UIParent)  -- �׼ǹ�ư�� �⺻ �����ӿ��� �̵� ���� �θ� �����ϸ� ��ư�� �Ҵ��� �ȴ�. �׷��� ���� 2�ڵ�� ��ġ �̵�
 		end
     end
 
@@ -106,17 +107,17 @@ function initStance()
 
             stanceButton:SetMovable(true)
             stanceButton:EnableMouse(true)
-            stanceButton:SetClampedToScreen(true) -- 화면 밖으로 벗어나지 않도록
+            stanceButton:SetClampedToScreen(true) -- ȭ�� ������ ����� �ʵ���
             stanceButton:RegisterForDrag("LeftButton")
 
             local btnName = stanceButton:GetName()
 
-            if MyCustomActionBarDbData[btnName] ~= nil then -- 한번이라도 버튼 이동을 시킨 정보가 존재하면 버튼 프레임에서 떼어낸다
+            if MyCustomActionBarDbData[btnName] ~= nil then -- �ѹ��̶� ��ư �̵��� ��Ų ������ �����ϸ� ��ư �����ӿ��� �����
                 if MyCustomActionBarDbData[btnName].pos ~= nil then
                     local saved = MyCustomActionBarDbData[btnName]
-                    stanceButton:ClearAllPoints()  -- 위치를 이동 시키기 전 포인터 정보 초기화
+                    stanceButton:ClearAllPoints()  -- ��ġ�� �̵� ��Ű�� �� ������ ���� �ʱ�ȭ
                     stanceButton:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-		            stanceButton:SetParent(UIParent)  -- 액션버튼의 기본 프레임에서 이동 없이 부모를 변경하면 버튼이 불능이 된다. 그래서 위의 2코드로 위치 이동
+		            stanceButton:SetParent(UIParent)  -- �׼ǹ�ư�� �⺻ �����ӿ��� �̵� ���� �θ� �����ϸ� ��ư�� �Ҵ��� �ȴ�. �׷��� ���� 2�ڵ�� ��ġ �̵�
 				end
             end
 
@@ -140,25 +141,25 @@ end
 
 
 function initButton()
-    -- 모든 버튼이 이동 가능하게 한다.
+    -- ��� ��ư�� �̵� �����ϰ� �Ѵ�.
     for i, btnFrame in ipairs(allButtons) do
         --print(btnFrame.numButtons)
     
         for j, btn in ipairs(btnFrame.actionButtons) do
-            --print("버튼 이름:", btn:GetName())
+            --print("��ư �̸�:", btn:GetName())
             btn:SetMovable(true)
-            btn:EnableMouse(true)
+            --btn:EnableMouse(true)
             btn:RegisterForDrag("LeftButton")
 
             local btnName = btn:GetName()
 
-            if MyCustomActionBarDbData[btnName] ~= nil then -- 한번이라도 버튼 이동을 시킨 정보가 존재하면 버튼 프레임에서 떼어낸다
+            if MyCustomActionBarDbData[btnName] ~= nil then -- �ѹ��̶� ��ư �̵��� ��Ų ������ �����ϸ� ��ư �����ӿ��� �����
                 if MyCustomActionBarDbData[btnName].pos ~= nil then
                     local saved = MyCustomActionBarDbData[btnName]
                     --print(btn:GetName())
-                    btn:ClearAllPoints()  -- 위치를 이동 시키기 전 포인터 정보 초기화
+                    btn:ClearAllPoints()  -- ��ġ�� �̵� ��Ű�� �� ������ ���� �ʱ�ȭ
                     btn:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", saved.pos.x, saved.pos.y)
-		            btn:SetParent(UIParent)  -- 액션버튼의 기본 프레임에서 이동 없이 부모를 변경하면 버튼이 불능이 된다. 그래서 위의 2코드로 위치 이동
+		            btn:SetParent(UIParent)  -- �׼ǹ�ư�� �⺻ �����ӿ��� �̵� ���� �θ� �����ϸ� ��ư�� �Ҵ��� �ȴ�. �׷��� ���� 2�ڵ�� ��ġ �̵�
                     -- btn:SetParent(nil)
 				end
             end
@@ -328,10 +329,10 @@ end
 function loadButtonSize()
     for i, btnFrame in ipairs(allButtons) do
         for j, btn in ipairs(btnFrame.actionButtons) do
-            -- print("버튼 이름:", btn:GetName())
+            -- print("��ư �̸�:", btn:GetName())
             local btnName = btn:GetName()
 
-            if MyCustomActionBarSizeDbData[btnName]~= nil then -- 한번이라도 버튼 사이즈를 변경 했다면
+            if MyCustomActionBarSizeDbData[btnName]~= nil then -- �ѹ��̶� ��ư ����� ���� �ߴٸ�
                 if MyCustomActionBarSizeDbData[btnName].buttonSize ~= nil then
                     setButtonSize(btn, MyCustomActionBarSizeDbData[btnName].buttonSize)
 				end

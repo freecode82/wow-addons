@@ -5,7 +5,7 @@ local title = settingsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarg
 title:SetPoint("TOPLEFT", 16, -16)
 title:SetText("AjaeButton Setting")
 
--- ¿É¼Ç Ã¢ »ý¼º
+-- ï¿½É¼ï¿½ Ã¢ ï¿½ï¿½ï¿½ï¿½
 --[[
 local mainButton = CreateFrame("Button", nil, settingsFrame, "UIPanelButtonTemplate")
 mainButton:SetSize(300, 25)
@@ -42,7 +42,7 @@ end)
 
 local MultiBarBottomLeftShowButton = CreateFrame("Button", nil, settingsFrame, "UIPanelButtonTemplate")
 MultiBarBottomLeftShowButton:SetSize(300, 25)
-MultiBarBottomLeftShowButton:SetText("MultiBarBottomRight show/hide")
+MultiBarBottomLeftShowButton:SetText("MultiBarBottomLeft show/hide")
 MultiBarBottomLeftShowButton:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -60)
 MultiBarBottomLeftShowButton:SetScript("OnClick", function()
     if not MultiBarBottomLeftButtonShow then
@@ -166,7 +166,7 @@ sizeStatusEditbox:SetAutoFocus(false)
 sizeStatusEditbox:SetNumeric(true)
 --sizeStatusEditbox:SetText(MainMenuBarSlider:GetValue())
 local label = settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-label:SetPoint("LEFT", sizeStatusEditbox, "RIGHT", 10, 0) -- EditBox ¿À¸¥ÂÊ 10px
+label:SetPoint("LEFT", sizeStatusEditbox, "RIGHT", 10, 0) -- EditBox ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10px
 label:SetText("<- show SIZE")
 
 
